@@ -100,14 +100,14 @@ GET      /greatgrandparent/:GreatGrandparentId/grandparent/:GrandparentId/parent
 GET      /greatgrandparent/:GreatGrandparentId/grandparent/:GrandparentId/parent/:ParentId/example/:Id/edit    (Edit)
 PUT      /greatgrandparent/:GreatGrandparentId/grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Update)
 DELETE   /greatgrandparent/:GreatGrandparentId/grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Destroy)
-``
+```
 
 Controllers are not always the correct solution so there are two more methods for routing urls.
 They are really the same method only one takes in a struct implementing http.Handler and the other a handler function.
 ```go
 func Match(method string, pattern string, handler http.Handler) error
 func MatchFunc(method string, pattern string, handler func(http.ResponseWriter, *http.Request)) error 
-``
+```
 
 They expept a http method (GET,POST,PUT or DELETE) or a empty string to indicate that the handler will handle all methods.
 The pattern sent in can contain variables which are preceded with a ':'. The last segment or the url may also be the wildcard character '*'. The wilcard will match anything after it while the variables will only match anything in the corresponding segment.
