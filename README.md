@@ -79,7 +79,7 @@ GET      /example/:Id         (Show)
 GET      /example/:Id/edit    (Edit)
 PUT      /example/:Id         (Update)
 DELETE   /example/:Id         (Destroy)
-``
+```
 
 If any number of parent controllers were given that would prefix every url pattern with /parent/:ParentId, this can be achieved by the following method call.
 ```go
@@ -107,7 +107,7 @@ They are really the same method only one takes in a struct implementing http.Han
 ```go
 func Match(method string, pattern string, handler http.Handler) error
 func MatchFunc(method string, pattern string, handler func(http.ResponseWriter, *http.Request)) error 
-```
+``
 
 They expept a http method (GET,POST,PUT or DELETE) or a empty string to indicate that the handler will handle all methods.
 The pattern sent in can contain variables which are preceded with a ':'. The last segment or the url may also be the wildcard character '*'. The wilcard will match anything after it while the variables will only match anything in the corresponding segment.
