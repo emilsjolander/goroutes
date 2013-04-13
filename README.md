@@ -34,7 +34,7 @@ goroutes.MatchFunc("GET", "/status",
     fmt.Fprintf(w, "Status ok!")
   })
 
-goroutes.Match("GET", "assets/*", http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))
+goroutes.Match("GET", "/assets/*", http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))
 goroutes.Match("GET", "/", new(HomeHandler))
 
 goroutes.Start()
