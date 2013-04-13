@@ -29,7 +29,10 @@ Done! Now just match some routes and press Start!
 goroutes.Resources(new(UsersController))
 goroutes.Resources(new(NotesController), "UsersController")
 
-goroutes.MatchFunc("GET", "/status", func(w http.ResponseWriter, req *http.Request){fmt.Fprintf(w, "Status ok!")})
+goroutes.MatchFunc("GET", "/status", 
+  func(w http.ResponseWriter, req *http.Request){
+    fmt.Fprintf(w, "Status ok!")
+  })
 
 goroutes.Match("GET", "assets/*", http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))
 goroutes.Match("GET", "/", new(HomeHandler))
@@ -79,7 +82,7 @@ GET      /example/:Id         (Show)
 GET      /example/:Id/edit    (Edit)
 PUT      /example/:Id         (Update)
 DELETE   /example/:Id         (Destroy)
-``
+```
 
 If any number of parent controllers were given that would prefix every url pattern with /parent/:ParentId, this can be achieved by the following method call.
 ```go
@@ -88,18 +91,18 @@ goroutes.Resources(new(ExampleController), "ParentController")
 
 Multiple parent controllers are also supported
 ```go
-goroutes.Resources(new(ExampleController), "Controller", "GrandparentController", "GreatGrandparentController")
+goroutes.Resources(new(ExampleController), "ParentController", "GrandparentController")
 ```
 
 The preceding call would generate the following resources
 ```text
-GET      /greatgrandparent/:GreatGrandparentId/grandparent/:GrandparentId/parent/:ParentId/example             (Index)    
-GET      /greatgrandparent/:GreatGrandparentId/grandparent/:GrandparentId/parent/:ParentId/example/new         (New)
-POST     /greatgrandparent/:GreatGrandparentId/grandparent/:GrandparentId/parent/:ParentId/example             (Create)
-GET      /greatgrandparent/:GreatGrandparentId/grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Show)
-GET      /greatgrandparent/:GreatGrandparentId/grandparent/:GrandparentId/parent/:ParentId/example/:Id/edit    (Edit)
-PUT      /greatgrandparent/:GreatGrandparentId/grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Update)
-DELETE   /greatgrandparent/:GreatGrandparentId/grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Destroy)
+GET      /grandparent/:GrandparentId/parent/:ParentId/example             (Index)    
+GET      /grandparent/:GrandparentId/parent/:ParentId/example/new         (New)
+POST     /grandparent/:GrandparentId/parent/:ParentId/example             (Create)
+GET      /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Show)
+GET      /grandparent/:GrandparentId/parent/:ParentId/example/:Id/edit    (Edit)
+PUT      /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Update)
+DELETE   /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Destroy)
 ```
 
 Controllers are not always the correct solution so there are two more methods for routing urls.
@@ -109,7 +112,7 @@ func Match(method string, pattern string, handler http.Handler) error
 func MatchFunc(method string, pattern string, handler func(http.ResponseWriter, *http.Request)) error 
 ```
 
-They expept a http method (GET,POST,PUT or DELETE) or a empty string to indicate that the handler will handle all methods.
+They expept a http method (GET, POST, PUT or DELETE) or a empty string to indicate that the handler will handle all methods.
 The pattern sent in can contain variables which are preceded with a ':'. The last segment or the url may also be the wildcard character '*'. The wilcard will match anything after it while the variables will only match anything in the corresponding segment.
 
 Pattern variables are extracted from the Request the same way form and query params are extracted.
