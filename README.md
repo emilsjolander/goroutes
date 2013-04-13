@@ -4,9 +4,9 @@ Goroutes
 About
 -----
 
-Groutes is a url routing library for go with support for routing RESTful routes to controllers.
+Goroutes is a url routing library for go with support for routing RESTful routes to controllers.
 
-This started a me wanting to experiment with go, but i have been developing using rails for the past months and a quickly missed a lot of it's features. Url routing with variables and RESTful routes to controllers being one of the major features i missed i decided to build this RESTful routing library for go.
+This started a with me wanting to experiment with go, but i have been developing using rails for the past months and a quickly missed a lot of its features. Url routing with variables and RESTful routes to controllers were one of the major features i missed so i decided to build this RESTful routing library for go.
 
 It takes inspiration from rails as well as the standard go url routing found in net/http.
 
@@ -14,7 +14,7 @@ It takes inspiration from rails as well as the standard go url routing found in 
 Usage
 -----
 
-First thing you have to is get the project
+First thing you have to do is get the project
 ```shell
 go get github.com/emilsjolander/goroutes
 ```
