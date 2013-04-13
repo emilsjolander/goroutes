@@ -71,7 +71,7 @@ To generate resources for a controller call
 goroutes.Resources(new(ExampleController))
 ```
 This call will generate the following resources
-```
+```text
 GET      /example             (Index)    
 GET      /example/new         (New)
 POST     /example             (Create)
@@ -88,11 +88,11 @@ goroutes.Resources(new(ExampleController), "ParentController")
 
 Multiple parent controllers are also supported
 ```go
-goroutes.Resources(new(ExampleController), "ParentController", "GrandparentController", "GreatGrandparentController")
+goroutes.Resources(new(ExampleController), "Controller", "GrandparentController", "GreatGrandparentController")
 ```
 
 The preceding call would generate the following resources
-```
+```text
 GET      /greatgrandparent/:GreatGrandparentId/grandparent/:GrandparentId/parent/:ParentId/example             (Index)    
 GET      /greatgrandparent/:GreatGrandparentId/grandparent/:GrandparentId/parent/:ParentId/example/new         (New)
 POST     /greatgrandparent/:GreatGrandparentId/grandparent/:GrandparentId/parent/:ParentId/example             (Create)
