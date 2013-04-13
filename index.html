@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Goroutes by emilsjolander</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Goroutes</h1>
+        <h2>A routing library for go with RESTful url routing to controllers</h2>
+        <a href="https://github.com/emilsjolander/goroutes" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h2>About</h2>
+
+<p>Goroutes is a url routing library for go with support for routing RESTful routes to controllers.</p>
+
+<p>This started a with me wanting to experiment with go, but i have been developing using rails for the past months and a quickly missed a lot of its features. Url routing with variables and RESTful routes to controllers were one of the major features i missed so i decided to build this RESTful routing library for go.</p>
+
+<p>It takes inspiration from rails as well as the standard go url routing found in net/http.</p>
+
+<h2>Usage</h2>
+
+<p>First thing you have to do is get the project</p>
+
+<pre lang="shell"><code>go get github.com/emilsjolander/goroutes
+</code></pre>
+
+<p>After that all you need to do is import it into your project</p>
+
+<div class="highlight"><pre><span class="kn">import</span> <span class="s">"github.com/emilsjolander/goroutes"</span>
+</pre></div>
+
+<p>Done! Now just match some routes and press Start!</p>
+
+<div class="highlight"><pre><span class="nx">goroutes</span><span class="p">.</span><span class="nx">Resources</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">UsersController</span><span class="p">))</span>
+<span class="nx">goroutes</span><span class="p">.</span><span class="nx">Resources</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">NotesController</span><span class="p">),</span> <span class="s">"UsersController"</span><span class="p">)</span>
+
+<span class="nx">goroutes</span><span class="p">.</span><span class="nx">MatchFunc</span><span class="p">(</span><span class="s">"GET"</span><span class="p">,</span> <span class="s">"/status"</span><span class="p">,</span> 
+  <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">){</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Fprintf</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">"Status ok!"</span><span class="p">)</span>
+  <span class="p">})</span>
+
+<span class="nx">goroutes</span><span class="p">.</span><span class="nx">Match</span><span class="p">(</span><span class="s">"GET"</span><span class="p">,</span> <span class="s">"/assets/*"</span><span class="p">,</span> <span class="nx">http</span><span class="p">.</span><span class="nx">StripPrefix</span><span class="p">(</span><span class="s">"/assets/"</span><span class="p">,</span> <span class="nx">http</span><span class="p">.</span><span class="nx">FileServer</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">Dir</span><span class="p">(</span><span class="s">"assets"</span><span class="p">))))</span>
+<span class="nx">goroutes</span><span class="p">.</span><span class="nx">Match</span><span class="p">(</span><span class="s">"GET"</span><span class="p">,</span> <span class="s">"/"</span><span class="p">,</span> <span class="nb">new</span><span class="p">(</span><span class="nx">HomeHandler</span><span class="p">))</span>
+
+<span class="nx">goroutes</span><span class="p">.</span><span class="nx">Start</span><span class="p">()</span>
+</pre></div>
+
+<h2>Api</h2>
+
+<p>I have designed the api to be as similar as possible to go's routing while at the same time adding as many of the great routing features that come with a framework like rails.</p>
+
+<p>There is only one public interface and that is the Controller interface. If your datastructure implements this interface goroutes can match RESTful routes the the corrosponding methods.</p>
+
+<div class="highlight"><pre><span class="kd">type</span> <span class="nx">Controller</span> <span class="kd">interface</span> <span class="p">{</span>
+  <span class="nx">Index</span>   <span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span>
+  <span class="nx">New</span>     <span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span>
+  <span class="nx">Create</span>  <span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span>
+  <span class="nx">Show</span>    <span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span>
+  <span class="nx">Edit</span>    <span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span>
+  <span class="nx">Update</span>  <span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span>
+  <span class="nx">Destroy</span> <span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>A lot of times a controller will only want to implement a handful of these methods, for this i have defined a BaseController struct that can be included into any controller as an anonymous field. Any method not overriden in your struct will answer the request with a 404.</p>
+
+<div class="highlight"><pre><span class="kd">type</span> <span class="nx">MyController</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">goroutes</span><span class="p">.</span><span class="nx">BaseController</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">MyController</span><span class="p">)</span> <span class="nx">Index</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// my response</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>To generate resources for a controller call</p>
+
+<div class="highlight"><pre><span class="nx">goroutes</span><span class="p">.</span><span class="nx">Resources</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">ExampleController</span><span class="p">))</span>
+</pre></div>
+
+<p>This call will generate the following resources</p>
+
+<div class="highlight"><pre>GET      /example             (Index)    
+GET      /example/new         (New)
+POST     /example             (Create)
+GET      /example/:Id         (Show)
+GET      /example/:Id/edit    (Edit)
+PUT      /example/:Id         (Update)
+DELETE   /example/:Id         (Destroy)
+</pre></div>
+
+<p>If any number of parent controllers were given that would prefix every url pattern with /parent/:ParentId, this can be achieved by the following method call.</p>
+
+<div class="highlight"><pre><span class="nx">goroutes</span><span class="p">.</span><span class="nx">Resources</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">ExampleController</span><span class="p">),</span> <span class="s">"ParentController"</span><span class="p">)</span>
+</pre></div>
+
+<p>Multiple parent controllers are also supported</p>
+
+<div class="highlight"><pre><span class="nx">goroutes</span><span class="p">.</span><span class="nx">Resources</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">ExampleController</span><span class="p">),</span> <span class="s">"ParentController"</span><span class="p">,</span> <span class="s">"GrandparentController"</span><span class="p">)</span>
+</pre></div>
+
+<p>The preceding call would generate the following resources</p>
+
+<div class="highlight"><pre>GET      /grandparent/:GrandparentId/parent/:ParentId/example             (Index)    
+GET      /grandparent/:GrandparentId/parent/:ParentId/example/new         (New)
+POST     /grandparent/:GrandparentId/parent/:ParentId/example             (Create)
+GET      /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Show)
+GET      /grandparent/:GrandparentId/parent/:ParentId/example/:Id/edit    (Edit)
+PUT      /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Update)
+DELETE   /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Destroy)
+</pre></div>
+
+<p>Controllers are not always the correct solution so there are two more methods for routing urls.
+They are really the same method only one takes in a struct implementing http.Handler and the other a handler function.</p>
+
+<div class="highlight"><pre><span class="kd">func</span> <span class="nx">Match</span><span class="p">(</span><span class="nx">method</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">pattern</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">handler</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">)</span> <span class="kt">error</span>
+<span class="kd">func</span> <span class="nx">MatchFunc</span><span class="p">(</span><span class="nx">method</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">pattern</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">handler</span> <span class="kd">func</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">))</span> <span class="kt">error</span> 
+</pre></div>
+
+<p>They expept a http method (GET, POST, PUT or DELETE) or a empty string to indicate that the handler will handle all methods.
+The pattern sent in can contain variables which are preceded with a ':'. The last segment or the url may also be the wildcard character '*'. The wilcard will match anything after it while the variables will only match anything in the corresponding segment.</p>
+
+<p>Pattern variables are extracted from the Request the same way form and query params are extracted.</p>
+
+<div class="highlight"><pre><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">ExampleController</span><span class="p">)</span> <span class="nx">Show</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">req</span><span class="p">.</span><span class="nx">ParseForm</span><span class="p">()</span>
+  <span class="nx">id</span> <span class="o">:=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">Form</span><span class="p">[</span><span class="s">"Id"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+  <span class="nx">parentId</span> <span class="o">:=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">Form</span><span class="p">[</span><span class="s">"ParentId"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+<h2>Contributing</h2>
+
+<p>Pull requests and issues are very welcome!</p>
+
+<p>Feature request are also welcome but i can't make any promise that they will make it in.
+I would like to keep the library as general as possible, if you are unsure you can just ask before you code ;)</p>
+
+<h2>License</h2>
+
+<pre><code>Copyright 2013 Emil Sjölander
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+</code></pre>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/emilsjolander/goroutes/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/emilsjolander/goroutes/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/emilsjolander/goroutes"></a> is maintained by <a href="https://github.com/emilsjolander">emilsjolander</a>.</p>
+
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
