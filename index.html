@@ -48,7 +48,8 @@
 <div class="highlight"><pre><span class="kn">import</span> <span class="s">"github.com/emilsjolander/goroutes"</span>
 </pre></div>
 
-<p>Done! Now just match some routes and press Start!</p>
+<p>Done! Now just match some routes and press Start!
+The server will run on port 9999. Test it out locally at http://localhost:9999/</p>
 
 <div class="highlight"><pre><span class="nx">goroutes</span><span class="p">.</span><span class="nx">Resources</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">UsersController</span><span class="p">))</span>
 <span class="nx">goroutes</span><span class="p">.</span><span class="nx">Resources</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">NotesController</span><span class="p">),</span> <span class="s">"UsersController"</span><span class="p">)</span>
@@ -127,6 +128,27 @@ GET      /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Show)
 GET      /grandparent/:GrandparentId/parent/:ParentId/example/:Id/edit    (Edit)
 PUT      /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Update)
 DELETE   /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Destroy)
+</pre></div>
+
+<p>Often time you will want to do a certain thing for many, if not all the actions in a controller. One example of this would be authentication. To make sure you do not repeat yourself your controller should implement the BeforeFilterer interface. In the BeforeFilter method you can deal will everything that you would otherwise repeat in many action methods. Save any data in the controller struct fields so they can be accessed from the action method which is called after.</p>
+
+<div class="highlight"><pre><span class="kd">type</span> <span class="nx">BeforeFilterer</span> <span class="kd">interface</span><span class="p">{</span>
+  <span class="nx">BeforeFilter</span><span class="p">(</span><span class="nx">a</span> <span class="nx">Action</span><span class="p">,</span> <span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="kt">bool</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>This method will be called just before the action method is called. Returning false from this method will result if the action method not being called, returning true will call the action method directly after the before filter. The action sent to this method is one of the following defined in controller.go.</p>
+
+<div class="highlight"><pre><span class="kd">type</span> <span class="nx">Action</span> <span class="kt">uint</span>
+<span class="kd">const</span> <span class="p">(</span>
+  <span class="nx">Index</span> <span class="nx">Action</span> <span class="p">=</span> <span class="kc">iota</span>
+  <span class="nx">New</span>
+  <span class="nx">Create</span>
+  <span class="nx">Show</span>
+  <span class="nx">Edit</span>
+  <span class="nx">Update</span>
+  <span class="nx">Destroy</span>
+<span class="p">)</span>
 </pre></div>
 
 <p>Controllers are not always the correct solution so there are two more methods for routing urls.
