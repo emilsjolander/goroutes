@@ -106,14 +106,13 @@ PUT      /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Updat
 DELETE   /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Destroy)
 ```
 
-Often time you will want to do a certain thing for many if not all actions in a controller, one example if authentication.
-To make sure you do not repeat yourself you can implement the BeforeFilterer interface. Here you can deal will everything that you would otherwise repeat in many action methods. Save any data in the controller struct fields so they can be accessed from the action method.
+Often time you will want to do a certain thing for many, if not all the actions in a controller. One example of this would be authentication. To make sure you do not repeat yourself your controller should implement the BeforeFilterer interface. In the BeforeFilter method you can deal will everything that you would otherwise repeat in many action methods. Save any data in the controller struct fields so they can be accessed from the action method which is called after.
 ```go
 type BeforeFilterer interface{
   BeforeFilter(a Action, w http.ResponseWriter, r *http.Request) bool
 }
 ```
-This method will be called just before the action method is called. Returning false from this method will result if the action method not being called, returning true will call the action method directly after the before filter. The action sent to this method is one of the following defined in controller.go
+This method will be called just before the action method is called. Returning false from this method will result if the action method not being called, returning true will call the action method directly after the before filter. The action sent to this method is one of the following defined in controller.go.
 ```go
 type Action uint
 const (
