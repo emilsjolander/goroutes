@@ -8,10 +8,43 @@ import (
   "reflect"
 )
 
+// All possible controller actions
+type Action uint
+const (
+  Index Action = iota
+  New
+  Create
+  Show
+  Edit
+  Update
+  Destroy
+)
+
+func (a Action) String() string {
+  if int(a) < len(actionNames) {
+    return actionNames[a]
+  }
+  return ""
+}
+
+var actionNames = []string{
+  Index:        "Index",
+  New:          "New",
+  Create:       "Create",
+  Show:         "Show",
+  Edit:         "Edit",
+  Update:       "Update",
+  Destroy:      "Destroy",
+}
+
 var (
   //validates the charachters alowed in a controller name. might be extended in the future
   controllerNameValidator = regexp.MustCompile("[a-zA-Z]+")
 )
+
+type BeforeFilterer interface{
+  BeforeFilter(a Action, w http.ResponseWriter, r *http.Request) bool
+}
 
 type Controller interface {
   Index   (w http.ResponseWriter, req *http.Request)
@@ -75,7 +108,8 @@ func getResourceName(controllerName string) (string, error) {
     return "", errors.New("goroutes: controller name must have suffix \"Controller\"")
   }
   controllerName = controllerName[:len(controllerName)-len("Controller")]
-  if strings.ToLower(controllerName) == "new" || strings.ToLower(controllerName) == "edit" || !controllerNameValidator.MatchString(controllerName) {
+  controllerNameLower := strings.ToLower(controllerName)
+  if controllerNameLower == "new" || controllerNameLower == "edit" || !controllerNameValidator.MatchString(controllerName) {
     return "", errors.New("goroutes: controller name must not be NewController, EditController or include invalid characters")
   }
   return controllerName,nil 

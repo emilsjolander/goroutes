@@ -4,6 +4,7 @@ import (
   "net/http"
   "strings"
   "fmt"
+  "reflect"
 )
 
 var (
@@ -68,15 +69,76 @@ func Resources(controller Controller, parentControllers ...string) error {
   }
   controllerPath := parentPath + strings.ToLower(resourceName)
 
-  MatchFunc("GET",    controllerPath + "/",         func(w http.ResponseWriter, r *http.Request){controller.Index(w,r)})
-  MatchFunc("GET",    controllerPath + "/new",      func(w http.ResponseWriter, r *http.Request){controller.New(w,r)})
-  MatchFunc("POST",   controllerPath + "/",         func(w http.ResponseWriter, r *http.Request){controller.Create(w,r)})
-  MatchFunc("GET",    controllerPath + "/:Id",      func(w http.ResponseWriter, r *http.Request){controller.Show(w,r)})
-  MatchFunc("GET",    controllerPath + "/:Id/edit", func(w http.ResponseWriter, r *http.Request){controller.Edit(w,r)})
-  MatchFunc("PUT",    controllerPath + "/:Id",      func(w http.ResponseWriter, r *http.Request){controller.Update(w,r)})
-  MatchFunc("DELETE", controllerPath + "/:Id",      func(w http.ResponseWriter, r *http.Request){controller.Destroy(w,r)})
+  MatchFunc("GET",    
+            controllerPath + "/",         
+            controllerHandler(controller, Index,
+              func(c Controller, w http.ResponseWriter, r *http.Request){
+                c.Index(w,r)
+              }))
+  MatchFunc("GET",    
+            controllerPath + "/new",      
+            controllerHandler(controller, New,
+              func(c Controller, w http.ResponseWriter, r *http.Request){
+                c.New(w,r)
+              }))
+  MatchFunc("POST",   
+            controllerPath + "/",         
+            controllerHandler(controller, Create,
+              func(c Controller, w http.ResponseWriter, r *http.Request){
+                c.Create(w,r)
+              }))
+  MatchFunc("GET",    
+            controllerPath + "/:Id",      
+            controllerHandler(controller, Show,
+              func(c Controller, w http.ResponseWriter, r *http.Request){
+                c.Show(w,r)
+              }))
+  MatchFunc("GET",    
+            controllerPath + "/:Id/edit", 
+            controllerHandler(controller, Edit,
+              func(c Controller, w http.ResponseWriter, r *http.Request){
+                c.Edit(w,r)
+              }))
+  MatchFunc("PUT",    
+            controllerPath + "/:Id",      
+            controllerHandler(controller, Update,
+              func(c Controller, w http.ResponseWriter, r *http.Request){
+                c.Update(w,r)
+              }))
+  MatchFunc("DELETE", 
+            controllerPath + "/:Id",      
+            controllerHandler(controller, Destroy,
+              func(c Controller, w http.ResponseWriter, r *http.Request){
+                c.Destroy(w,r)
+              }))
 
   return nil
+}
+
+// this function will create a new instance of the underlying struct type found in controller
+// this is done to handle concurrent requests. 
+// With each request given a fresh copy of the controller it is free to set any value on the 
+// controller struct in the before filter without worrying about syncronizing with other requests
+func newInstanceOfController(controller Controller) Controller {
+  v := reflect.New(reflect.Indirect(reflect.ValueOf(controller)).Type()).Interface()
+  return v.(Controller)
+}
+
+// builds the function to handle a controller action request
+// will call the before filter if the controller implements the BeforeFilterer interface
+// will not call the controllers action if the BeforeFilterer returns false
+func controllerHandler(controller Controller, a Action, actionFunc func(Controller,http.ResponseWriter,*http.Request)) func(http.ResponseWriter,*http.Request) {
+  return func(w http.ResponseWriter, r *http.Request) {
+    c := newInstanceOfController(controller)
+    proceed := true
+    switch c.(type) {
+    case BeforeFilterer:
+      proceed = c.(BeforeFilterer).BeforeFilter(a,w, r)
+    }
+    if proceed {
+      actionFunc(c,w,r)
+    }
+  }
 }
 
 // build the path that precedes the controller name

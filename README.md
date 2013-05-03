@@ -25,6 +25,7 @@ import "github.com/emilsjolander/goroutes"
 ```
 
 Done! Now just match some routes and press Start!
+The server will run on port 9999. Test it out locally at http://localhost:9999/
 ```go
 goroutes.Resources(new(UsersController))
 goroutes.Resources(new(NotesController), "UsersController")
@@ -45,7 +46,7 @@ Api
 
 I have designed the api to be as similar as possible to go's routing while at the same time adding as many of the great routing features that come with a framework like rails.
 
-There is only one public interface and that is the Controller interface. If your datastructure implements this interface goroutes can match RESTful routes the the corrosponding methods.
+This is the Controller interface. If your datastructure implements this interface goroutes can match RESTful routes the the corrosponding methods.
 ```go
 type Controller interface {
   Index   (w http.ResponseWriter, req *http.Request)
@@ -103,6 +104,27 @@ GET      /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Show)
 GET      /grandparent/:GrandparentId/parent/:ParentId/example/:Id/edit    (Edit)
 PUT      /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Update)
 DELETE   /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Destroy)
+```
+
+Often time you will want to do a certain thing for many if not all actions in a controller, one example if authentication.
+To make sure you do not repeat yourself you can implement the BeforeFilterer interface. Here you can deal will everything that you would otherwise repeat in many action methods. Save any data in the controller struct fields so they can be accessed from the action method.
+```go
+type BeforeFilterer interface{
+  BeforeFilter(a Action, w http.ResponseWriter, r *http.Request) bool
+}
+```
+This method will be called just before the action method is called. Returning false from this method will result if the action method not being called, returning true will call the action method directly after the before filter. The action sent to this method is one of the following defined in controller.go
+```go
+type Action uint
+const (
+  Index Action = iota
+  New
+  Create
+  Show
+  Edit
+  Update
+  Destroy
+)
 ```
 
 Controllers are not always the correct solution so there are two more methods for routing urls.
