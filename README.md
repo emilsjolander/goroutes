@@ -11,8 +11,8 @@ This started a with me wanting to experiment with go, but i have been developing
 It takes inspiration from rails as well as the standard go url routing found in net/http.
 
 
-Usage
------
+Getting started
+---------------
 
 First thing you have to do is get the project
 ```shell
