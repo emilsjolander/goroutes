@@ -109,9 +109,9 @@ func getResourceName(controllerName string) (string, error) {
     return "", errors.New("goroutes: controller name must have suffix \"Controller\"")
   }
   controllerName = controllerName[:len(controllerName)-len("Controller")]
-  controllerNameLower := inflect.Underscore(controllerName)
-  if controllerNameLower == "new" || controllerNameLower == "edit" || !controllerNameValidator.MatchString(controllerName) {
+  controllerNameUnderscore := inflect.Underscore(controllerName)
+  if controllerNameUnderscore == "new" || controllerNameUnderscore == "edit" || !controllerNameValidator.MatchString(controllerName) {
     return "", errors.New("goroutes: controller name must not be NewController, EditController or include invalid characters")
   }
-  return controllerName,nil 
+  return controllerNameUnderscore,nil 
 }
