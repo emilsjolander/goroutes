@@ -1,34 +1,47 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
     <title>Goroutes by emilsjolander</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
   </head>
-
   <body>
-    <header>
-      <div class="inner">
-        <h1>Goroutes</h1>
-        <h2>A routing library for go with RESTful url routing to controllers</h2>
-        <a href="https://github.com/emilsjolander/goroutes" class="button"><small>View project on</small>GitHub</a>
-      </div>
-    </header>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h2>About</h2>
+      <header>
+        <h1>Goroutes</h1>
+        <p>A routing library for go with RESTful url routing to controllers</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/emilsjolander/goroutes" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/emilsjolander/goroutes/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/emilsjolander/goroutes/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h1>Goroutes</h1>
+
+<h2>About</h2>
 
 <p>Goroutes is a url routing library for go with support for routing RESTful routes to controllers.</p>
 
@@ -36,7 +49,7 @@
 
 <p>It takes inspiration from rails as well as the standard go url routing found in net/http.</p>
 
-<h2>Usage</h2>
+<h2>Getting started</h2>
 
 <p>First thing you have to do is get the project</p>
 
@@ -69,7 +82,9 @@ The server will run on port 9999. Test it out locally at http://localhost:9999/<
 
 <p>I have designed the api to be as similar as possible to go's routing while at the same time adding as many of the great routing features that come with a framework like rails.</p>
 
-<p>There is only one public interface and that is the Controller interface. If your datastructure implements this interface goroutes can match RESTful routes the the corrosponding methods.</p>
+<h3>Controllers</h3>
+
+<p>This is the Controller interface. If your datastructure implements this interface goroutes can match RESTful routes the the corrosponding methods.</p>
 
 <div class="highlight"><pre><span class="kd">type</span> <span class="nx">Controller</span> <span class="kd">interface</span> <span class="p">{</span>
   <span class="nx">Index</span>   <span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span>
@@ -109,26 +124,32 @@ PUT      /example/:Id         (Update)
 DELETE   /example/:Id         (Destroy)
 </pre></div>
 
-<p>If any number of parent controllers were given that would prefix every url pattern with /parent/:ParentId, this can be achieved by the following method call.</p>
+<p>If any number of parent controllers were given that would prefix every url pattern with /parents/:ParentId, this can be achieved by the following method call.</p>
 
-<div class="highlight"><pre><span class="nx">goroutes</span><span class="p">.</span><span class="nx">Resources</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">ExampleController</span><span class="p">),</span> <span class="s">"ParentController"</span><span class="p">)</span>
+<div class="highlight"><pre><span class="nx">goroutes</span><span class="p">.</span><span class="nx">Resources</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">ExampleController</span><span class="p">),</span> <span class="s">"ParentsController"</span><span class="p">)</span>
 </pre></div>
 
 <p>Multiple parent controllers are also supported</p>
 
-<div class="highlight"><pre><span class="nx">goroutes</span><span class="p">.</span><span class="nx">Resources</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">ExampleController</span><span class="p">),</span> <span class="s">"ParentController"</span><span class="p">,</span> <span class="s">"GrandparentController"</span><span class="p">)</span>
+<div class="highlight"><pre><span class="nx">goroutes</span><span class="p">.</span><span class="nx">Resources</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">ExampleController</span><span class="p">),</span> <span class="s">"ParentsController"</span><span class="p">,</span> <span class="s">"GrandparentsController"</span><span class="p">)</span>
 </pre></div>
 
-<p>The preceding call would generate the following resources</p>
+<p>The preceding call would generate the following resources.</p>
 
-<div class="highlight"><pre>GET      /grandparent/:GrandparentId/parent/:ParentId/example             (Index)    
-GET      /grandparent/:GrandparentId/parent/:ParentId/example/new         (New)
-POST     /grandparent/:GrandparentId/parent/:ParentId/example             (Create)
-GET      /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Show)
-GET      /grandparent/:GrandparentId/parent/:ParentId/example/:Id/edit    (Edit)
-PUT      /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Update)
-DELETE   /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Destroy)
+<div class="highlight"><pre>GET      /grandparents/:GrandparentId/parents/:ParentId/example             (Index)    
+GET      /grandparents/:GrandparentId/parents/:ParentId/example/new         (New)
+POST     /grandparents/:GrandparentId/parents/:ParentId/example             (Create)
+GET      /grandparents/:GrandparentId/parents/:ParentId/example/:Id         (Show)
+GET      /grandparents/:GrandparentId/parents/:ParentId/example/:Id/edit    (Edit)
+PUT      /grandparents/:GrandparentId/parents/:ParentId/example/:Id         (Update)
+DELETE   /grandparents/:GrandparentId/parents/:ParentId/example/:Id         (Destroy)
 </pre></div>
+
+<h3>Controller naming</h3>
+
+<p>A Controller's name must end with 'Controller' e.g. <code>UsersController</code>, <code>InfoController</code> and so on. A controller with a plural name such as <code>UsersController</code> will have it's id parameter singularized when accessed via a child controller, a child controller of <code>UsersController</code> would look for a <code>UserId</code> param that is. Controller names made up of multiple words such as <code>SuperUserController</code> will become <code>/super_user</code> in the url.</p>
+
+<h3>Before filter</h3>
 
 <p>Often time you will want to do a certain thing for many, if not all the actions in a controller. One example of this would be authentication. To make sure you do not repeat yourself your controller should implement the BeforeFilterer interface. In the BeforeFilter method you can deal will everything that you would otherwise repeat in many action methods. Save any data in the controller struct fields so they can be accessed from the action method which is called after.</p>
 
@@ -151,6 +172,8 @@ DELETE   /grandparent/:GrandparentId/parent/:ParentId/example/:Id         (Destr
 <span class="p">)</span>
 </pre></div>
 
+<h3>Single function routing</h3>
+
 <p>Controllers are not always the correct solution so there are two more methods for routing urls.
 They are really the same method only one takes in a struct implementing http.Handler and the other a handler function.</p>
 
@@ -158,8 +181,10 @@ They are really the same method only one takes in a struct implementing http.Han
 <span class="kd">func</span> <span class="nx">MatchFunc</span><span class="p">(</span><span class="nx">method</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">pattern</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">handler</span> <span class="kd">func</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">))</span> <span class="kt">error</span> 
 </pre></div>
 
-<p>They expept a http method (GET, POST, PUT or DELETE) or a empty string to indicate that the handler will handle all methods.
+<p>They expect a http method (GET, POST, PUT or DELETE) or a empty string to indicate that the handler will handle all methods.
 The pattern sent in can contain variables which are preceded with a ':'. The last segment or the url may also be the wildcard character '*'. The wilcard will match anything after it while the variables will only match anything in the corresponding segment.</p>
+
+<h3>Extracting url values</h3>
 
 <p>Pattern variables are extracted from the Request the same way form and query params are extracted.</p>
 
@@ -169,6 +194,36 @@ The pattern sent in can contain variables which are preceded with a ':'. The las
   <span class="nx">parentId</span> <span class="o">:=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">Form</span><span class="p">[</span><span class="s">"ParentId"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
+
+<p>Remember that if the controllers parent name is plural, the id name will be singular.</p>
+
+<h3>Namespaces</h3>
+
+<p>Goroutes makes it easy to namespace your resources. You can wrap any of the above function calls in a call to the Namespace function.</p>
+
+<div class="highlight"><pre><span class="kd">func</span> <span class="nx">Namespace</span><span class="p">(</span><span class="nx">ns</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">f</span> <span class="kd">func</span><span class="p">())</span>
+</pre></div>
+
+<p><code>ns</code> is the namespace you want to route inside and <code>f</code> is the function where all route matching for this namespace should occur.
+Calls to the Namespace function can be nested. Here is an example of this.</p>
+
+<div class="highlight"><pre><span class="nx">goroutes</span><span class="p">.</span><span class="nx">Namespace</span><span class="p">(</span><span class="s">"api"</span><span class="p">,</span> <span class="kd">func</span><span class="p">(){</span>
+  <span class="nx">goroutes</span><span class="p">.</span><span class="nx">Match</span><span class="p">(</span><span class="s">"GET"</span><span class="p">,</span> <span class="s">"/info"</span><span class="p">,</span> <span class="nx">infoHandler</span><span class="p">)</span>
+  <span class="nx">goroutes</span><span class="p">.</span><span class="nx">Namespace</span><span class="p">(</span><span class="s">"v1"</span><span class="p">,</span> <span class="kd">func</span><span class="p">(){</span>
+    <span class="nx">goroutes</span><span class="p">.</span><span class="nx">Match</span><span class="p">(</span><span class="s">"GET"</span><span class="p">,</span> <span class="s">"/login"</span><span class="p">,</span> <span class="nx">loginHandler</span><span class="p">)</span>
+  <span class="p">})</span>
+<span class="p">})</span>
+</pre></div>
+
+<p>The above code generates the following routes.</p>
+
+<div class="highlight"><pre>GET   /api/info
+GET   /api/v1/login
+</pre></div>
+
+<h2>Limitations</h2>
+
+<p>Currently goroutes is not thread safe during the initialization process. This means that until this limitation is fixed you should do all setup in a single goroutine, the main function is a very good place for this.</p>
 
 <h2>Contributing</h2>
 
@@ -193,25 +248,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 </code></pre>
-        </section>
-
-        <aside id="sidebar">
-          <a href="https://github.com/emilsjolander/goroutes/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/emilsjolander/goroutes/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
-
-          <p class="repo-owner"><a href="https://github.com/emilsjolander/goroutes"></a> is maintained by <a href="https://github.com/emilsjolander">emilsjolander</a>.</p>
-
-          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/emilsjolander">emilsjolander</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
+      </footer>
     </div>
-
-  
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
   </body>
 </html>
