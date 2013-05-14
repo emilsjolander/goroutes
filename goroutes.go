@@ -5,11 +5,15 @@ import (
   "strings"
   "fmt"
   "reflect"
+  "bitbucket.org/pkg/inflect"
 )
 
 var (
   // all the mapped routes
   routes []*route
+
+  // the current namespace being opperated on
+  namespace string
 
   // otherwise know as the 404-function
   ResourceNotFoundHandler = func(w http.ResponseWriter, req *http.Request) {
@@ -17,6 +21,16 @@ var (
     fmt.Fprint(w, "Could not find this goroute!")
   }
 )
+
+// this function will set a new namespace
+// inside the given function any methods can be executed
+// they will be executed on the given namespace
+func Namespace(ns string, f func()) {
+  oldNameSpace := namespace
+  namespace = namespace + "/" + ns
+  f()
+  namespace = oldNameSpace
+}
 
 // match a handler to a method and a pattern.
 // this functions much like net/http packages Handle function
@@ -26,7 +40,7 @@ var (
 // patterns may define the last segment as a wildcard ex: /user/* which will match any path starting with /user/
 // the method my have a zero value ("") which will match the pattern for any method
 func Match(method string, pattern string, handler http.Handler) error {
-  r, err := createRoute(method, pattern, handler)
+  r, err := createRoute(method, namespace + pattern, handler)
   if err != nil {
     return err
   }
@@ -150,7 +164,7 @@ func buildParentPath(parentControllers []string) (string, error) {
     if err != nil {
       return "",err
     }
-    path += strings.ToLower(name) + "/:" + name+"Id/"
+    path += strings.ToLower(name) + "/:" + inflect.Singularize(name)+"Id/"
   }
   return path, nil
 }

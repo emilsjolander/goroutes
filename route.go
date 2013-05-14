@@ -48,9 +48,9 @@ func createRoute(method string, pattern string, handler http.Handler) (*route, e
   regexpPattern  = wildcardReplacer.ReplaceAllString(regexpPattern, "\\/[\\w\\d-\\/\\.]+\\/")
   regexpPattern  = "^" + regexpPattern + "?$"
 
-  r := &route{  method: method,
-                pattern: pattern,
-                handler: handler,
+  r := &route{  method:         method,
+                pattern:        pattern,
+                handler:        handler,
                 patternMatcher: regexp.MustCompile(regexpPattern) }
 
   return r, nil

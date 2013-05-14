@@ -6,6 +6,7 @@ import (
   "regexp"
   "errors"
   "reflect"
+  "bitbucket.org/pkg/inflect"
 )
 
 // All possible controller actions
@@ -108,7 +109,7 @@ func getResourceName(controllerName string) (string, error) {
     return "", errors.New("goroutes: controller name must have suffix \"Controller\"")
   }
   controllerName = controllerName[:len(controllerName)-len("Controller")]
-  controllerNameLower := strings.ToLower(controllerName)
+  controllerNameLower := inflect.Underscore(controllerName)
   if controllerNameLower == "new" || controllerNameLower == "edit" || !controllerNameValidator.MatchString(controllerName) {
     return "", errors.New("goroutes: controller name must not be NewController, EditController or include invalid characters")
   }
